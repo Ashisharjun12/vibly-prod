@@ -20,12 +20,12 @@ export const emailHelper = async (options) => {
         user: _config.SMTP_USER || "ashishrahul748@gmail.com",
         pass: _config.SMTP_PASS || "lgbp slwc mffl base",
       },
-      // Additional configuration for better delivery
+      // Additional configuration for better delivery and rate limiting
       pool: true,
-      maxConnections: 5,
-      maxMessages: 100,
-      rateDelta: 20000,
-      rateLimit: 5,
+      maxConnections: 2, // Reduced connections
+      maxMessages: 50, // Reduced messages per connection
+      rateDelta: 60000, // 60 seconds
+      rateLimit: 10, // 10 emails per minute
       tls: {
         rejectUnauthorized: false
       }

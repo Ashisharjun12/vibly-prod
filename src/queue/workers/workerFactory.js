@@ -4,10 +4,18 @@ import { ValkeyConnection } from "../../config/valkey.js";
 import { EmailWorker } from "./emailWoker.js";
 
 export const startAllWorkers = () => {
-  // Simple email worker
+  // Email worker with rate limiting
   const emailWorker = new Worker("email-queue", EmailWorker, { 
     connection: ValkeyConnection,
-    concurrency: 2
+    concurrency: 1, // Process only 1 email at a time
+    limiter: {
+      max: 10, // Maximum 10 emails
+      duration: 60000, // Per 60 seconds (1 minute)
+    },
+    settings: {
+      stalledInterval: 30000, // Check for stalled jobs every 30 seconds
+      maxStalledCount: 1, // Retry stalled jobs once
+    }
   });
 
   // Simple event listeners
