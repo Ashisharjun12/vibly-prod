@@ -10,15 +10,28 @@ const __dirname = path.dirname(__filename);
 
 export const emailHelper = async (options) => {
   try {
+    // Validate SMTP configuration
+    if (!_config.SMTP_USER || !_config.SMTP_PASS) {
+      throw new Error('SMTP credentials not configured. Please check SMTP_USER and SMTP_PASS environment variables.');
+    }
+
+    console.log('📧 SMTP Configuration:', {
+      host: _config.SMTP_HOST || "smtp.gmail.com",
+      port: _config.SMTP_PORT || 587,
+      service: _config.SMTP_SERVICE || "gmail",
+      user: _config.SMTP_USER,
+      hasPassword: !!_config.SMTP_PASS
+    });
+
     // Create transporter with improved configuration
     const transporter = nodemailer.createTransport({
       host: _config.SMTP_HOST || "smtp.gmail.com",
-      port: _config.SMTP_PORT || 587, 
+      port: parseInt(_config.SMTP_PORT) || 587, 
       service: _config.SMTP_SERVICE || "gmail",
-      secure: false,
+      secure: false, // true for 465, false for other ports
       auth: {
-        user: _config.SMTP_USER || "",
-        pass: _config.SMTP_PASS || "",
+        user: _config.SMTP_USER,
+        pass: _config.SMTP_PASS,
       },
       // Additional configuration for better delivery and rate limiting
       pool: true,
@@ -28,8 +41,16 @@ export const emailHelper = async (options) => {
       rateLimit: 10, // 10 emails per minute
       tls: {
         rejectUnauthorized: false
-      }
+      },
+      // Connection timeout settings
+      connectionTimeout: 60000, // 60 seconds
+      greetingTimeout: 30000, // 30 seconds
+      socketTimeout: 60000 // 60 seconds
     });
+
+    // Verify connection configuration
+    await transporter.verify();
+    console.log('✅ SMTP connection verified successfully');
 
     const { email, subject, template, data } = options;
 
