@@ -13,84 +13,96 @@
         }
         
         .container {
-            max-width: 560px;
+            max-width: 600px;
             margin: 0 auto;
             background: #ffffff;
-            border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 8px 24px rgba(15,23,42,0.06);
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
         }
         
         .brand {
-            font-weight: 700;
-            font-size: 18px;
-            color: #0f172a;
-            margin-bottom: 8px;
             text-align: center;
+            margin-bottom: 0;
+            padding: 40px 40px 20px;
         }
         
         .logo {
             width: 120px;
             height: auto;
-            margin: 0 auto 16px;
+            margin: 0 auto;
             display: block;
         }
         
         .title {
             font-weight: 700;
-            font-size: 22px;
-            margin: 8px 0 6px;
+            font-size: 24px;
+            margin: 16px 0 0;
             text-align: center;
+            color: #000000;
+        }
+        
+        .order-details-section {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            margin: 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .greeting {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 6px;
         }
         
         .desc {
-            color: #475569;
             font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 18px;
+            color: #000000;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
         
-        .order-info {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 16px;
-            margin: 20px 0;
-        }
-        
-        .order-row {
+        .order-info-grid {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .order-info-item {
+            width: 100%;
+        }
+        
+        .order-info-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #000000;
             margin-bottom: 8px;
         }
         
-        .order-row:last-child {
-            margin-bottom: 0;
-        }
-        
-        .order-label {
+        .order-info-value {
             font-size: 14px;
-            color: #64748b;
-            font-weight: 500;
-        }
-        
-        .order-value {
-            font-size: 14px;
-            color: #0f172a;
             font-weight: 600;
+            color: #000000;
         }
         
         .section-title {
             font-size: 18px;
             font-weight: 700;
-            color: #0f172a;
-            margin: 24px 0 16px;
+            color: #000000;
+            margin: 30px 40px 16px;
+            text-align: left;
+        }
+        
+        .order-items-section {
+            padding: 0 40px 30px;
         }
         
         .product-item {
             display: flex;
-            margin-bottom: 16px;
-            padding-bottom: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
             border-bottom: 1px solid #e2e8f0;
         }
         
@@ -104,7 +116,7 @@
             width: 80px;
             height: 80px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 6px;
             margin-right: 16px;
             border: 1px solid #e2e8f0;
         }
@@ -114,30 +126,30 @@
         }
         
         .product-name {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
-            color: #0f172a;
-            margin-bottom: 4px;
+            color: #000000;
+            margin-bottom: 6px;
+            line-height: 1.4;
         }
         
         .product-specs {
-            font-size: 14px;
-            color: #64748b;
+            font-size: 12px;
+            color: #666666;
             margin-bottom: 4px;
         }
         
         .product-price {
             font-size: 16px;
             font-weight: 700;
-            color: #0f172a;
+            color: #000000;
         }
         
         .summary-section {
             background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 16px;
-            margin: 20px 0;
+            padding: 20px 40px;
+            margin: 0;
+            border-bottom: 1px solid #e2e8f0;
         }
         
         .summary-row {
@@ -165,11 +177,10 @@
         }
         
         .shipping-section {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 16px;
-            margin: 20px 0;
+            background: #ffffff;
+            padding: 20px 40px;
+            margin: 0;
+            border-bottom: 1px solid #e2e8f0;
         }
         
         .shipping-title {
@@ -211,10 +222,8 @@
         
         .track-info {
             background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 16px;
-            margin: 20px 0;
+            padding: 20px 40px;
+            margin: 0;
             text-align: center;
         }
         
@@ -263,30 +272,103 @@
         
         @media (max-width: 600px) {
             body {
-                padding: 16px;
+                padding: 12px;
             }
             
             .container {
+                max-width: 100%;
+            }
+            
+            .brand {
+                padding: 20px 20px 16px;
+            }
+            
+            .logo {
+                width: 100px;
+            }
+            
+            .title {
+                font-size: 20px;
+                margin: 12px 0 0;
+            }
+            
+            .order-details-section {
                 padding: 20px;
+            }
+            
+            .greeting {
+                font-size: 14px;
+            }
+            
+            .desc {
+                font-size: 13px;
+            }
+            
+            .order-info-grid {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .order-info-label {
+                font-size: 11px;
+                margin-bottom: 12px;
+            }
+            
+            .order-info-value {
+                font-size: 13px;
+            }
+            
+            .section-title {
+                font-size: 16px;
+                margin: 20px 20px 12px;
+            }
+            
+            .order-items-section {
+                padding: 0 20px 20px;
             }
             
             .product-item {
                 flex-direction: column;
                 text-align: center;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
             }
             
             .product-image {
-                margin-right: 0;
-                margin-bottom: 12px;
+                width: 70px;
+                height: 70px;
+                margin: 0 auto 8px;
             }
             
-            .order-row {
-                flex-direction: column;
-                text-align: left;
+            .product-name {
+                font-size: 13px;
             }
             
-            .order-value {
-                margin-top: 2px;
+            .product-specs {
+                font-size: 11px;
+            }
+            
+            .product-price {
+                font-size: 14px;
+            }
+            
+            .summary-section {
+                margin: 0 20px;
+                padding: 16px;
+            }
+            
+            .shipping-section {
+                margin: 0 20px;
+                padding: 16px;
+            }
+            
+            .track-info {
+                margin: 0 20px;
+                padding: 16px;
+            }
+            
+            .footer {
+                padding: 16px 20px;
             }
         }
     </style>
@@ -295,45 +377,49 @@
     <div class="container">
         <!-- Header -->
         <div class="brand">
-            <img src="https://res.cloudinary.com/dnfknlwos/image/upload/v1759596976/logo_p8rjah.png" alt="Vibly Logo" class="logo">
-            Vibly
+            <img src="https://res.cloudinary.com/dnfknlwos/image/upload/v1759602472/vibly1_fhaeud.png" alt="Vibly Logo" class="logo">
         </div>
         
         <div class="title">🎉 Order Confirmed!</div>
-        <p class="desc">Hi <strong><%= user.name %></strong>, thank you for your order! We're excited to get your new clothes ready for you.</p>
         
-        <!-- Order Information -->
-        <div class="order-info">
-            <div class="order-row">
-                <span class="order-label">Order Number: </span>
-                <span class="order-value"><%= order.orderId %></span>
-            </div>
-            <div class="order-row">
-                <span class="order-label">Order Date: </span>
-                <span class="order-value"><%= new Date(order.orderedAt).toLocaleDateString('en-IN') %></span>
-            </div>
-            <div class="order-row">
-                <span class="order-label">Status: </span>
-                <span class="order-value">Confirmed</span>
+        <!-- Order Details Section -->
+        <div class="order-details-section">
+            <div class="greeting">Hi <%= user.name %>,</div>
+            <p class="desc">Thank you for your order! We're excited to get your new clothes ready for you.</p>
+            
+            <div class="order-info-grid">
+                <div class="order-info-item">
+                    <div class="order-info-label">Order Number : </div>
+                    <div class="order-info-value"> <%= order.orderId %></div>
+                </div>
+                <div class="order-info-item">
+                    <div class="order-info-label">Order Date : </div>
+                    <div class="order-info-value"> <%= new Date(order.orderedAt).toLocaleDateString('en-IN') %></div>
+                </div>
             </div>
         </div>
         
         <!-- Product Items -->
-        <div class="section-title">Order Items</div>
-        <% order.items.forEach(function(item) { %>
-        <div class="product-item">
-            <img src="<%= item.product.image.secure_url || item.product.image || '/placeholder-product.jpg' %>" 
-                 alt="<%= item.product.name %>" 
-                 class="product-image">
-            <div class="product-details">
-                <div class="product-name"><%= item.product.name %></div>
-                <div class="product-specs">
-                    Size: <%= item.size %> | Color: <%= item.color.name %> | Qty: <%= item.quantity %>
+        <div class="order-items-section">
+            <div class="section-title">Order Items</div>
+            <% order.items.forEach(function(item) { %>
+            <div class="product-item">
+                <img src="<%= item.product.image.secure_url || item.product.image || '/placeholder-product.jpg' %>" 
+                     alt="<%= item.product.name %>" 
+                     class="product-image">
+                <div class="product-details">
+                    <div class="product-name"><%= item.product.name %></div>
+                    <div class="product-specs">
+                        Size: <%= item.size %> | Color: <%= item.color.name %>
+                    </div>
+                    <div class="product-specs">
+                        Quantity: <%= item.quantity %>
+                    </div>
+                    <div class="product-price">₹<%= (item.amount.price * item.quantity).toLocaleString('en-IN') %></div>
                 </div>
-                <div class="product-price">₹<%= (item.amount.price * item.quantity).toLocaleString('en-IN') %></div>
             </div>
+            <% }); %>
         </div>
-        <% }); %>
         
         <!-- Order Summary -->
         <div class="summary-section">
@@ -341,7 +427,7 @@
             
             <div class="summary-row">
                 <span class="summary-label">Subtotal: </span>
-                <span class="summary-value">₹<%= order.items.reduce((sum, item) => sum + (item.amount.price * item.quantity), 0).toLocaleString('en-IN') %></span>
+                <span class="summary-value"> ₹<%= order.items.reduce((sum, item) => sum + (item.amount.price * item.quantity), 0).toLocaleString('en-IN') %></span>
             </div>
             
             <div class="summary-row">
@@ -401,15 +487,21 @@
             <div class="btn-wrap">
                 <a class="btn" href="https://www.vibly.in/user/track-order?orderId=<%= order.orderId %>">Track Order</a>
             </div>
+            <div class="support-link">
+                Need help? <a href="mailto:vibly85@gmail.com" style="color: #0f172a; text-decoration: underline;">Contact our support team</a><br>
+                Email: vibly85@gmail.com | Phone: 75430 49556
+            </div>
         </div>
         
         <!-- Footer -->
         <div class="footer">
             <div class="footer-text">Thank you for shopping with Vibly!</div>
-            <div class="footer-text">We appreciate your business and look forward to serving you again.</div>
+            <div class="footer-text">Follow us on social media for the latest fashion trends and exclusive offers.</div>
             <div class="footer-brand">
                 Vibly E-commerce Store<br>
-                © 2025 Vibly. All rights reserved.
+                Email: vibly85@gmail.com | Phone: 75430 49556<br>
+                © 2025 Vibly. All rights reserved.<br>
+                <a href="#" style="color: #64748b; text-decoration: underline;">Unsubscribe</a>
             </div>
         </div>
     </div>

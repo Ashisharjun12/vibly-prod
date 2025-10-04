@@ -13,12 +13,12 @@ export const startAllWorkers = () => {
       duration: 60000, // Per 60 seconds (1 minute)
     },
     settings: {
-      stalledInterval: 30000, // Check for stalled jobs every 30 seconds
-      maxStalledCount: 1, // Retry stalled jobs once
+      stalledInterval: 30000, 
+      maxStalledCount: 1, 
     }
   });
 
-  // Simple event listeners
+  //  event listeners
   emailWorker.on("completed", (job) => {
     console.log(`✅ Email sent to: ${job.data.email}`);
   });
