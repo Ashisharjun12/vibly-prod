@@ -17,8 +17,8 @@ export const emailHelper = async (options) => {
       service: _config.SMTP_SERVICE || "gmail",
       secure: false,
       auth: {
-        user: _config.SMTP_USER || "ashishrahul748@gmail.com",
-        pass: _config.SMTP_PASS || "lgbp slwc mffl base",
+        user: _config.SMTP_USER || "",
+        pass: _config.SMTP_PASS || "",
       },
       // Additional configuration for better delivery and rate limiting
       pool: true,
@@ -42,7 +42,7 @@ export const emailHelper = async (options) => {
     const mailOptions = {
       from: {
         name: 'Vibly',
-        address: _config.SMTP_USER || "ashishrahul748@gmail.com"
+        address: _config.SMTP_USER || ""
       },
       to: email,
       subject,
