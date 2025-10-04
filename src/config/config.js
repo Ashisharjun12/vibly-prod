@@ -22,7 +22,8 @@ const {
   CASHFREE_APP_ID,
   CASHFREE_SECRET_KEY,
   CASHFREE_WEBHOOK_SECRET,
-  REDIS_URI
+  REDIS_URI,
+  SENTRY_DSN
 } = process.env;
 
 export const _config = {
@@ -45,5 +46,6 @@ export const _config = {
   CASHFREE_APP_ID,
   CASHFREE_SECRET_KEY,
   CASHFREE_WEBHOOK_SECRET,
-  REDIS_URI
+  REDIS_URI,
+  SENTRY_DSN
 };
