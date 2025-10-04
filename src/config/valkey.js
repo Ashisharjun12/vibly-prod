@@ -1,7 +1,9 @@
 import IORedis from "ioredis";
+import { _config } from "./config.js";
+
 
 export const ValkeyConnection = new IORedis(
-  "rediss://default:ARsKAAImcDI5ZGVlNTczZjVmNzg0Y2Q1YTkyMzIxMDZhN2U1Mjc3M3AyNjkyMg@sterling-ibex-6922.upstash.io:6379",
+  _config.REDIS_URI,
   {
     maxRetriesPerRequest: null,
     enableReadyCheck: false,
