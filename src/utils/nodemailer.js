@@ -25,12 +25,13 @@ export const emailHelper = async (options) => {
 
     // Create transporter with improved configuration
     const transporter = nodemailer.createTransport({
-      host: _config.SMTP_HOST || "smtp.hostinger.com",
-      port: parseInt(_config.SMTP_PORT) || 465, 
+      host: _config.SMTP_HOST,
+      port: parseInt(_config.SMTP_PORT), 
+      
       secure: true, // true for 465, false for other ports
       auth: {
-        user: _config.SMTP_USER || "support@vibly.in",
-        pass: _config.SMTP_PASS || "Vibly@123",
+        user: _config.SMTP_USER,
+        pass: _config.SMTP_PASS ,
       },
       // Additional configuration for better delivery and rate limiting
       pool: true,
