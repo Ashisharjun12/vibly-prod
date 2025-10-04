@@ -35,6 +35,7 @@ import reviewRoutes from "./routes/review.route.js";
 import adminStatsRoutes from "./routes/admin/stats.route.js";
 import initSentry from "./utils/sentry.js";
 import * as Sentry from "@sentry/node"
+import { startAllWorkers } from "./queue/workers/workerFactory.js";
 
 // Initialize Sentry
 initSentry();
@@ -42,7 +43,11 @@ initSentry();
 
 const app = express();
 
+
+
 const PORT = _config.PORT;
+
+startAllWorkers();
 
 // Database connection
 connectDB().then(() => {

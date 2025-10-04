@@ -21,7 +21,8 @@ const {
   RAZORPAY_WEBHOOK_SECRET,
   CASHFREE_APP_ID,
   CASHFREE_SECRET_KEY,
-  CASHFREE_WEBHOOK_SECRET
+  CASHFREE_WEBHOOK_SECRET,
+  REDIS_URI
 } = process.env;
 
 export const _config = {
@@ -44,4 +45,5 @@ export const _config = {
   CASHFREE_APP_ID,
   CASHFREE_SECRET_KEY,
   CASHFREE_WEBHOOK_SECRET,
+  REDIS_URI
 };

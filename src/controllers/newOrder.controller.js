@@ -6,6 +6,7 @@ import Color from '../models/color.model.js';
 import { Address } from '../models/address.model.js';
 import { withTransaction } from '../utils/withTransaction.js';
 import { generateOrderId, generateReturnId, generateCancelId } from '../services/orderUtils.js';
+import { EmailQueue } from '../queue/producer.js';
 const { paymentService } = await import('../services/paymetService.js');
 
 const statusMap = Object.values(OrderStatus).reduce((map, statusObj) => {
@@ -40,6 +41,8 @@ const createOrderSchema = Joi.object({
     paymentMethod: Joi.string().valid(...Object.values(PaymentMethod)).required(),
     paymentProvider: Joi.string().valid('razorpay', 'cashfree').allow(null).optional(),
     transactionId: Joi.string().allow(null).optional(),
+    shippingCharges: Joi.number().precision(2).min(0).default(0),
+    totalAmount: Joi.number().precision(2).min(0).optional(),
 });
 
 export const createOrder = async (req, res) => {
@@ -61,11 +64,12 @@ export const createOrder = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Please order properly.', details: error.details });
     }
 
-    const { items, shippingInfo, paymentMethod, paymentProvider, transactionId } = value;
+    const { items, shippingInfo, paymentMethod, paymentProvider, transactionId, shippingCharges, totalAmount } = value;
     const userId = req.user;
     
-    console.log('Validated data:', { items, shippingInfo, paymentMethod, paymentProvider, transactionId, userId });
+    console.log('Validated data:', { items, shippingInfo, paymentMethod, paymentProvider, transactionId, shippingCharges, totalAmount, userId });
     console.log('Available PaymentMethod values:', Object.values(PaymentMethod));
+    console.log('Backend will calculate shipping charges based on payment method');
     
     // Additional validation for payment method
     if (!Object.values(PaymentMethod).includes(paymentMethod)) {
@@ -182,7 +186,11 @@ export const createOrder = async (req, res) => {
                     ? product.salePrice.discountedPrice
                     : product.nonSalePrice.discountedPrice;
 
-                const shippingCharges = 0; 
+                // Calculate shipping charges based on payment method
+                let itemShippingCharges = 0;
+                if (paymentMethod === PaymentMethod.COD) {
+                    itemShippingCharges = 50; // ₹50 for COD orders
+                } 
 
                 // Get the best available image
                 const productImage = variant.images?.[0] || product.images?.[0] || { secure_url: variant.orderImage };
@@ -204,8 +212,8 @@ export const createOrder = async (req, res) => {
                     quantity,
                     amount: {
                         price,
-                        shippingCharges,
-                        totalAmount: price * quantity + shippingCharges,
+                        shippingCharges: itemShippingCharges,
+                        totalAmount: price * quantity + itemShippingCharges,
                     },
                     orderStatus: OrderStatus.ORDERED.value,
                     statusHistory: [
@@ -216,6 +224,20 @@ export const createOrder = async (req, res) => {
                         },
                     ],
                 });
+            }
+
+            // Calculate total shipping charges for the order
+            let totalOrderShippingCharges = 0;
+            if (paymentMethod === PaymentMethod.COD) {
+                totalOrderShippingCharges = 50; // ₹50 for COD orders
+            } else if (paymentMethod === PaymentMethod.ONLINE) {
+                // For online payments, calculate based on order total
+                const orderSubtotal = orderItems.reduce((sum, item) => sum + (item.amount.price * item.quantity), 0);
+                if (orderSubtotal < 599) {
+                    totalOrderShippingCharges = 50; // ₹50 for orders below ₹599
+                } else {
+                    totalOrderShippingCharges = 0; // Free shipping for orders ₹599 and above
+                }
             }
 
             // Determine payment status based on payment method
@@ -235,6 +257,7 @@ export const createOrder = async (req, res) => {
             console.log('Creating order with transaction ID:', transactionId);
             console.log('Creating order with payment provider:', paymentProvider);
             console.log('Creating order with payment status:', paymentStatus);
+            console.log('Creating order with total shipping charges:', totalOrderShippingCharges);
             console.log('Order items count:', orderItems.length);
             
             const order = new Order({
@@ -246,6 +269,7 @@ export const createOrder = async (req, res) => {
                 paymentProvider: paymentProvider || null,
                 transactionId: transactionId || null,
                 paymentStatus,
+                shippingCharges: totalOrderShippingCharges,
                 orderedAt: new Date(),
             });
 
@@ -266,6 +290,33 @@ export const createOrder = async (req, res) => {
             );
             await userDoc.cartList.save({ session });
             console.log('Cart updated successfully');
+
+            // Send order confirmation email
+            try {
+                const emailData = {
+                    type: 'order_confirmation',
+                    email: userDoc.email,
+                    subject: `Order Confirmation - ${orderId}`,
+                    template: 'OrderConfirmation.ejs',
+                    data: {
+                        order: savedOrder,
+                        user: {
+                            name: `${userDoc.firstname || ''} ${userDoc.lastname || ''}`.trim() || 'Customer',
+                            email: userDoc.email
+                        }
+                    }
+                };
+
+                await EmailQueue.add('send-order-confirmation', emailData, {
+                    delay: 1000, // 1 second delay to ensure order is fully processed
+                    priority: 1
+                });
+
+                console.log('Order confirmation email queued successfully');
+            } catch (emailError) {
+                console.error('Failed to queue order confirmation email:', emailError);
+                // Don't fail the order creation if email fails
+            }
 
             console.log('=== ORDER CREATION DEBUG END (SUCCESS) ===');
             return res.status(201).json({
