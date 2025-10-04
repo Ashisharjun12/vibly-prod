@@ -33,6 +33,7 @@ import paymentRoutes from "./routes/user/payment.route.js";
 import adminPaymentRoutes from "./routes/admin/payment.route.js";
 import reviewRoutes from "./routes/review.route.js";
 import adminStatsRoutes from "./routes/admin/stats.route.js";
+import addressRoutes from "./routes/user/address.route.js";
 import initSentry from "./utils/sentry.js";
 import * as Sentry from "@sentry/node"
 import { startAllWorkers } from "./queue/workers/workerFactory.js";
@@ -125,6 +126,7 @@ app.use("/api/newOrders", authMiddleware, newOrderRoutes);
 app.use("/api/sale", authMiddleware, saleRoutes);
 app.use("/api/payments", authMiddleware, paymentRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/address", addressRoutes);
 
 //Admin Routes
 app.use("/api/admin/banners", adminMiddleware, adminBannerRoutes);
