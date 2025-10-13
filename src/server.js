@@ -38,7 +38,7 @@ import initSentry from "./utils/sentry.js";
 import * as Sentry from "@sentry/node"
 import { startAllWorkers } from "./queue/workers/workerFactory.js";
 
-// Initialize Sentry
+// Initialize Sentry...,,,
 initSentry();
 
 

@@ -6,7 +6,7 @@ services:
     ports:
       - "6379:6379"
     environment:
-      - VALKEY_PASSWORD=
+      - VALKEY_PASSWORD=12345
     volumes:
       - valkey_data:/data
     restart: unless-stopped
