@@ -37,6 +37,8 @@ import addressRoutes from "./routes/user/address.route.js";
 import initSentry from "./utils/sentry.js";
 import * as Sentry from "@sentry/node"
 import { startAllWorkers } from "./queue/workers/workerFactory.js";
+import shiprocketRoutes from "./routes/admin/shiprocket.route.js";
+
 
 // Initialize Sentry...,,,
 initSentry();
@@ -63,14 +65,15 @@ const allowedOrigins = [
   "https://vibly.in",
   "https://vibly.in/",
   "https://www.vibly.in",
-  "https://www.vibly.in/"
+  "https://www.vibly.in/",
+  "https://apiv2.shiprocket.in"
 ];
 
 
 app.use(cors({
   origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "x-shiprocket-token"],
   exposedHeaders: ["Content-Range", "X-Content-Range"],
   credentials: true,
 }));
@@ -139,6 +142,7 @@ app.use("/api/admin/sales", adminMiddleware, adminSaleRoutes);
 app.use("/api/admin/users", adminMiddleware, adminUserRoutes);
 app.use("/api/admin/payments", adminMiddleware, adminPaymentRoutes);
 app.use("/api/admin/stats", adminMiddleware, adminStatsRoutes);
+app.use("/api/admin/shiprocket", adminMiddleware, shiprocketRoutes);
 
 
 

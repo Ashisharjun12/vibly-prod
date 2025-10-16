@@ -36,6 +36,22 @@ const statusHistorySchema = new Schema(
   { _id: false }
 );
 
+const shiprocketSchema = new Schema({
+  orderId: String,
+  shipmentId: String,
+  trackingNumber: String,
+  courierName: String,
+  returnOrderId: String,
+  returnShipmentId: String,
+  returnTrackingNumber: String,
+  flags:{
+    adhocOrderCreated: { type: Boolean, default: false },
+    awbAssigned: { type: Boolean, default: false },
+    pickupGenerated: { type: Boolean, default: false },
+  }
+}, { _id: false });
+
+
 const orderItemSchema = new Schema(
   {
     product: {
@@ -54,9 +70,8 @@ const orderItemSchema = new Schema(
     quantity: { type: Number, required: true, min: 1 },
 
     amount: {
-      price: { type: Number, required: true },
-      shippingCharges: { type: Number, default: 0 },
-      totalAmount: { type: Number, required: true },
+      type: Number,
+      required: true,
     },
 
     orderStatus: {
@@ -95,6 +110,11 @@ const orderItemSchema = new Schema(
     refundRejectedAt: Date,
     refundRejectedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     refundRejectionReason: String,
+    
+    shippedAt: Date,
+    deliveredAt: Date,
+
+    shiprocket: shiprocketSchema
   }
   // removed `_id: false` so each item has its own _id
 );
@@ -135,6 +155,14 @@ const newOrderSchema = new Schema(
       type: String,
       enum: Object.values(PaymentStatus),
       default: PaymentStatus.PENDING,
+    },
+
+    amount: {
+      shippingCharges: {
+        type: Number,
+        required: true,
+      },
+      totalAmount: { type: Number, required: true }
     },
 
     orderedAt: { type: Date, default: Date.now },

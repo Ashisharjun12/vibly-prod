@@ -1,20 +1,98 @@
 import crypto from 'crypto';
 import { OrderStatus } from '../models/newOrder.model.js';
-// ----- STATUS TRANSITION HELPER -----
-export const canTransition = (current, target) => {
-    return OrderStatus[current]?.next.includes(target);
+
+// Create status map for quick lookup
+const statusMap = Object.values(OrderStatus).reduce((map, statusObj) => {
+    map[statusObj.value] = statusObj.next;
+    return map;
+}, {});
+
+/**
+ * Check if a status transition is valid
+ * @param {string} currentStatus - Current status of the item
+ * @param {string} nextStatus - Desired next status
+ * @returns {boolean} - True if transition is valid
+ */
+export const canTransition = (currentStatus, nextStatus) => {
+    if (!statusMap[currentStatus]) return false;
+    return statusMap[currentStatus].includes(nextStatus);
 };
 
-// ----- AGGREGATE ORDER STATUS (BATCH LEVEL) -----
-export const getOverallOrderStatus = (items) => {
-    const statuses = items.map(i => i.orderStatus);
+/**
+ * Get all possible next statuses for a given status
+ * @param {string} currentStatus - Current status
+ * @returns {string[]} - Array of possible next statuses
+ */
+export const getNextStatuses = (currentStatus) => {
+    return statusMap[currentStatus] || [];
+};
 
-    if (statuses.every(s => s === 'DELIVERED')) return 'DELIVERED';
-    if (statuses.every(s => s === 'CANCELLED')) return 'CANCELLED';
-    if (statuses.every(s => s === 'RETURNED')) return 'RETURNED';
-    if (statuses.includes('RETURN_REQUESTED')) return 'RETURN_REQUESTED';
-    if (statuses.includes('SHIPPED')) return 'SHIPPED';
-    return 'ORDERED';
+/**
+ * Validate status transition with detailed error message
+ * @param {string} currentStatus - Current status
+ * @param {string} nextStatus - Desired next status
+ * @returns {Object} - {isValid: boolean, message: string}
+ */
+export const validateStatusTransition = (currentStatus, nextStatus) => {
+    if (!canTransition(currentStatus, nextStatus)) {
+        const possibleStatuses = getNextStatuses(currentStatus);
+        return {
+            isValid: false,
+            message: `Cannot transition from ${currentStatus} to ${nextStatus}. Possible next statuses: ${possibleStatuses.join(', ')}`
+        };
+    }
+    return { isValid: true, message: 'Valid transition' };
+};
+
+/**
+ * Get overall order status based on item statuses
+ * @param {Array} items - Array of order items
+ * @returns {string} - Overall order status
+ */
+export const getOverallOrderStatus = (items) => {
+    const statuses = items.map(item => item.orderStatus);
+
+    // Priority order for overall status
+    if (statuses.some(s => s === OrderStatus.RETURN_REQUESTED.value)) return OrderStatus.RETURN_REQUESTED.value;
+    if (statuses.every(s => s === OrderStatus.DELIVERED.value)) return OrderStatus.DELIVERED.value;
+    if (statuses.every(s => s === OrderStatus.CANCELLED.value)) return OrderStatus.CANCELLED.value;
+    if (statuses.every(s => s === OrderStatus.RETURNED.value)) return OrderStatus.RETURNED.value;
+    if (statuses.every(s => s === OrderStatus.REFUNDED.value)) return OrderStatus.REFUNDED.value;
+    if (statuses.includes(OrderStatus.SHIPPED.value)) return OrderStatus.SHIPPED.value;
+
+    return OrderStatus.ORDERED.value; // Default fallback
+};
+
+/**
+ * Create status history entry
+ * @param {string} status - Status value
+ * @param {string} note - Status note
+ * @returns {Object} - Status history entry
+ */
+export const createStatusHistoryEntry = (status, note = '') => {
+    return {
+        status,
+        note,
+        changedAt: new Date()
+    };
+};
+
+/**
+ * Calculate total amount for order items
+ * @param {Array} items - Array of order items
+ * @returns {number} - Total amount
+ */
+export const calculateTotalAmount = (items) => {
+    return items.reduce((total, item) => total + (item.amount * item.quantity), 0);
+};
+
+/**
+ * Calculate total quantity for order items
+ * @param {Array} items - Array of order items
+ * @returns {number} - Total quantity
+ */
+export const calculateTotalQuantity = (items) => {
+    return items.reduce((total, item) => total + item.quantity, 0);
 };
 
 // ----- ID GENERATORS -----

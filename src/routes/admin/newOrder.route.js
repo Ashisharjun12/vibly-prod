@@ -10,8 +10,12 @@ import {
     updateReturnRequestStatus,
     getAllRefundRequests,
     approveRefundRequest,
-    rejectRefundRequest
+    rejectRefundRequest,
+    createAdhocOrderStep,
+    assignAWBStep,
+    generatePickupStep
 } from '../../controllers/newOrder.controller.js';
+import { shiprocketMiddleware } from '../../middleware/shiprocketMiddleware.js';
 
 const router = express.Router();
 
@@ -43,5 +47,10 @@ router.put('/returns/:returnId/status', updateReturnRequestStatus);
 router.get('/refunds', getAllRefundRequests);
 router.put('/refunds/:refundRequestId/approve', approveRefundRequest);
 router.put('/refunds/:refundRequestId/reject', rejectRefundRequest);
+
+// Shiprocket shipping routes - 3-step process
+router.post('/:orderId/create-adhoc-order', shiprocketMiddleware, createAdhocOrderStep);
+router.post('/:orderId/assign-awb', shiprocketMiddleware, assignAWBStep);
+router.post('/:orderId/generate-pickup', shiprocketMiddleware, generatePickupStep);
 
 export default router;
